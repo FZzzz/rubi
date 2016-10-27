@@ -17,5 +17,9 @@ codegen.o: parser.h parser.dasc expr.dasc stdlib.dasc minilua
 	cat parser.dasc expr.dasc stdlib.dasc | ./minilua dynasm/dynasm.lua -o codegen.c -
 	$(C) -o $@ -c codegen.c
 
+bench: rubi
+	python bench.py > output.txt
+	gnuplot runtime.gp
+
 clean:
-	$(RM) a.out rubi minilua *.o *~ text codegen.c
+	$(RM) a.out rubi minilua *.o *~ text codegen.c runtime.png output.txt
