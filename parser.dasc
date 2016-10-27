@@ -18,10 +18,12 @@
 #include "parser.h"
 #include "expr.h"
 
+//define target architecture and rubi_actions
 |.arch x86
 |.globals L_
 |.actionlist rubiactions
 
+// jit stuffs 
 dasm_State* d;
 static dasm_State** Dst = &d;
 void* rubilabels[L__MAX];
@@ -464,14 +466,16 @@ int (*parser())(int *, void **)
     eval(0, 0);
 
     for (int i = 0; i < strings.count; ++i)
+    {
         replaceEscape(strings.text[i]);
-
+    }
     uint8_t* buf = (uint8_t*)jit_finalize();
 
     for (int i = 0; i < functions.count; i++)
         *(int*)(buf + dasm_getpclabel(&d, functions.func[i].espBgn) - 4) = (locVar.size[i+1] + 6)*4;
 
     dasm_free(&d);
+    //return the program function
     return ((int (*)(int *, void **))rubilabels[L_START]);
 }
 
@@ -523,8 +527,6 @@ int32_t assignment()
                 } else {
                     | mov [ecx+edx], eax
                 }
-            } else if ((inc = skip("++")) || (dec = skip("--"))) {
-                // TODO
             } else 
                 error("%d: invalid assignment", tok.tok[tok.pos].nline);
         } else { // Scalar?
@@ -532,6 +534,7 @@ int32_t assignment()
                 compExpr();
             } else if((inc = skip("++")) || (dec = skip("--"))) {
                 // mov eax, varaible
+                printf("haha\n");
                 | mov eax, [ebp - siz*v->id]
                 | push eax
                 if (inc)
