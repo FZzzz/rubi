@@ -534,7 +534,6 @@ int32_t assignment()
                 compExpr();
             } else if((inc = skip("++")) || (dec = skip("--"))) {
                 // mov eax, varaible
-                printf("haha\n");
                 | mov eax, [ebp - siz*v->id]
                 | push eax
                 if (inc)
